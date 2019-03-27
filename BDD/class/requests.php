@@ -37,7 +37,7 @@
     function getConnexion($conne,$id ,$mdp){
         global $getConnexion_SQL;
         $req = $conne->prepare($getConnexion_SQL);
-        $req->execute(array($id,$mdp));
+        $req->execute(array($id));
         $donnees = $req->fetch();
         return $donnees;
     }
@@ -76,11 +76,41 @@
         
     }
     global $deconnexion_SQL;
-    $deconnexion_SQL ="DELETE FROM connexion WHERE iduser= ? , sessionkey=?";
-    function deconnexion($conne,$iduser,$sessionkey){
+    $deconnexion_SQL ="DELETE FROM connexion WHERE iduser= ?";
+    function deconnexion($conne,$iduser){
         global $deconnexion_SQL;
         $req = $conne->prepare($deconnexion_SQL);
-        $req->execute(array($iduser,$sessionkey));
+        $req->execute(array($iduser));
+        $donnees = $req->fetch();
+        return $donnees;
+    }
+
+
+    function checkIfAdmin($conne, $id){
+        return false;
+    }
+
+    function deleteAllFactureOfUser($bdd,$id){
+        return false;
+    }
+
+
+    global $deleteAllAppareilOfUser_SQL;
+    $deleteAllAppareilOfUser_SQL = "DELETE FROM appareils WHERE IDusers=?";
+    function deleteAllAppareilOfUser($bdd, $id){
+        global $deleteAllAppareilOfUser_SQL;
+        $req = $bdd->prepare($deleteAllAppareilOfUser_SQL);
+        $req->execute(array($id));
+        $donnees = $req->fetch();
+        return $donnees;
+    }
+
+    global $deleteUserFromId_SQL;
+    $deleteUserFromId_SQL = "DELETE FROM users WHERE ID=?";
+    function deleteUserFromId($bdd, $id){
+        global $deleteUserFromId_SQL;
+        $req = $bdd->prepare($deleteUserFromId_SQL);
+        $req->execute(array($id));
         $donnees = $req->fetch();
         return $donnees;
     }

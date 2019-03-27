@@ -56,18 +56,35 @@ switch( $_SERVER['REQUEST_METHOD']){
     break;
     case 'DELETE' :
         // on déconnecte un utilisateur
+
         // on récupère l'id de l'utilisateur et la clé de session
             // si y'a pas de clé de session on renvoie un json d'erreur avec message
-            // $donnees = deconnexion($bdd , $id, $sessionkey);
-            // $res
-            var_dump($_GET);
+        if(!isset($_GET['id']) || !isset($_GET['sessionkey']) ){
+            $res= getNewError(402,"wrong argument");
+            echo json_encode($res);
+            die();
+        }
+        $id=$_GET['id'];
+        $sessionkey=$_GET['sessionkey'];
         
+        $bdd = Connexion::getMySQLConnexion();
+           
         // on vérifie avec une request SQL que la clé de session est pour l'utilisateur
             // si c'est pas la bonne, on renvoie un json d'erreur avec message
+        $donnees = getConnexion($bdd, $id, "");
+        if($donnees ==false){
+            $res= getNewError(402,"Wrong session key");
+            echo json_encode($res);
+            die();
+        }
+        
         
         // on enlève la connexion dans la table connexion
+        deconnexion($bdd, $id);
 
         // et on renvoie un json success avec message 
+        $res = getnewSuccess(200, "Disconnected. Bye Bye");
+        echo json_encode($res);
     break;
     default : 
         $response = getNewError(204, "Request not handled");

@@ -2,6 +2,7 @@
 include("../functions.php");
 include("../class/Connexion.php");
 include("../class/requests.php");
+include("../class/mongoRequests.php");
 include("./utils.php");
 
 switch( $_SERVER['REQUEST_METHOD']){
@@ -68,55 +69,86 @@ switch( $_SERVER['REQUEST_METHOD']){
         /**
          *  vérifier que c une personne connecté
          */
+        $bdd = Connexion::getMySQLConnexion();
                 // si il est connecté, on récupère l'id et la clé de session.
                         // on fait une requete SQL pour vérifier que les infos sont bonnes
                 // sinon, on vérifie qu'il a donné le password et le username
                         // on effectue la connexion dans le site nous même 
-
+        if(isset($_GET['id']) && isset($_GET['sessionkey']) ){
+            $id=$_GET['id'];
+            $sessionkey=$_GET['sessionkey'];
+            $donnees = getConnexion($bdd, $id, "");
+            if($donnees ==false){
+                $res= getNewError(402,"Wrong session key");
+                echo json_encode($res);
+                die();
+            }
+        }else if(isset($_GET['username']) && isset($_GET['password']) ){
+            $username = $_GET['username'];
+            $password = $_GET['password'];
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, array( "username" => $username , "password" => $password));
+            curl_setopt($curl, CURLOPT_URL, "http://localhost/SiteD/BDD/API/connexion.php"); // a modifier plus tard
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            $resultAPI = curl_exec($curl);
+            curl_close($curl);
+            $resultAPI = json_decode($resultAPI, true);
+            if($resultAPI['status'] != 'success'){
+                $res= getNewError(402,"wrong password/username");
+                echo json_encode($res);
+                die();
+            }
+            $id = $resultAPI['id'];
+        }
+        
+        
+        
         
         // vérifier si l'utilisateur a le droit de supprimer son compte ou c'est l'admin
                 // CAS 1) : Si il veut supprimer SON compte 
                 // CAS 2) : Si il s'agit d'un admin
-                
-                // SINON on renvoie un JSON avec getNewError avec msg : ",'a pas les droits pour supprimer le compte" et on termine exit()
+        
+        $userToDelete = $_GET['toDelete'];
+        $cando = checkIfAdmin($bdd, $id);
+        if( ! $cando){
+            $cando = ($id == $userToDelete);
+        }
+        if(!$cando){
+            $res= getNewError(402,"User dont have permission");
+            echo json_encode($res);
+            die();
+        }
 
 
         // effectivement supprimer le compte
-            // on récupère tous les appareils de l'utilisateur.
-            // on supprime tous ces appareils de la BDD
+            // on supprime tous ses appareils de la BDD
+            $res = deleteAllAppareilOfUser($bdd, $userToDelete);
             // on supprime toutes les factures de cet utilisateur
+            $res = deleteAllFactureOfUser($bdd, $userToDelete);
+
             // on supprime toutes les consommation de l'utilisateur
+            $res = deleteAllConsoOfUser($userToDelete);
+
             // enfin on supprime l'utilisateur de la BDD
-            // nota bene : regarder comment curl marche en PHP 
+            $res = deleteUserFromId($bdd, $userToDelete);
 
-
-        //// $_DELETE je suis pas sur qu'il existe
-        //// on a pas besoin de tous ces champs pour supprimer un utilisateur
-        $var_Nom = $_DELETE["nom"];
-        $var_Prenom = $_DELETE["prenom"];
-        $var_Adresse = $_DELETE["adresse"];
-        $var_Departement = $_DELETE["departement"];
-        $var_mail = $_DELETE["mail"];
-        $var_Telephone = $_DELETE["telephone"];
-        $var_Username = $_DELETE["username"];
-        $var_mdp = $_DELETE['password'];
-
-
-        $bdd = Connexion::getMySQLConnexion();
-
-        //// je comprends pas à quoi ça sert de faire ça 
-        $var_mdp = md5($var_mdp);
-        $var_Adresse = $bdd->quote($var_Adresse);
-
-        //// on veut supprimer un utilisateur pas insert!!!!!!!
-        //// à refaire ELIASSSSSSS
-        $requete  = insertUser($bdd, $var_Nom,$var_Prenom,$var_Adresse ,$var_Departement,$var_mail,$var_Telephone,$var_Username,$var_mdp);
-        $response = getNewError(204, "User not exist");
-        echo json_encode($response);
-
+            $res = getnewSuccess(200, "User deleted");
+            echo json_encode($res);
 
         // une fois la réposne envoyé, on déconnecte l'utilisateur si on l'a connecté 
 
+        if(isset($_GET['username']) && isset($_GET['password']) ){
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, array( "id" => $resultAPI['id'] , "sessionkey" => $resultAPI['sessionKey']));
+            curl_setopt($curl, CURLOPT_URL, "http://localhost/SiteD/BDD/API/connexion.php"); // a modifier plus tard
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            $result = curl_exec($curl);
+            curl_close($curl);
+        }
         break;
     default :
         $response = getNewError(204, "Request not handled");
