@@ -43,25 +43,70 @@ switch( $_SERVER['REQUEST_METHOD']){
         echo json_encode($response);
         break;
     case 'GET':
-        echo 'GET request not done for now';
         /**
          * Lister les appareil d'un utilisateur
          */
+        $bdd = Connexion::getMySQLConnexion();
         // si il est connecté, on récupère l'id et la clé de session.
                         // on fait une requete SQL pour vérifier que les infos sont bonnes
                 // sinon, on vérifie qu'il a donné le password et le username
                         // on effectue la connexion dans le site nous même 
 
+        if(isset($_GET['id']) && isset($_GET['sessionkey']) ){
+            $id=$_GET['id'];
+            $sessionkey=$_GET['sessionkey'];
+            $donnees = getConnexion($bdd, $id, "");
+            if($donnees ==false){
+                $res= getNewError(402,"Wrong session key");
+                echo json_encode($res);
+                die();
+            }
+        }else if(isset($_GET['username']) && isset($_GET['password']) ){
+            $username = $_GET['username'];
+            $password = $_GET['password'];
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, array( "username" => $username , "password" => $password));
+            curl_setopt($curl, CURLOPT_URL, "http://localhost/SiteD/BDD/API/connexion.php"); // a modifier plus tard
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            $resultAPI = curl_exec($curl);
+            curl_close($curl);
+            $resultAPI = json_decode($resultAPI, true);
+            if($resultAPI['status'] != 'success'){
+                $res= getNewError(402,"wrong password/username");
+                echo json_encode($res);
+                die();
+            }
+            $id = $resultAPI['id'];
+        }
+
+
         // vérifier si l'utilisateur a le droit de voir son compte ou c'est l'admin
                 // CAS 1) : Si il veut voir SES appareils 
                 // CAS 2) : Si il s'agit d'un admin
                 
-                // SINON on renvoie un JSON avec getNewError avec msg : ",'a pas les droits pour supprimer le compte" et on termine exit()
+                // SINON on renvoie un JSON avec getNewError avec msg : 
 
+        $userToGetAppareils = $_GET['toGet'];
+        $cando = checkIfAdmin($bdd, $id);
+        if( ! $cando){
+            $cando = ($id == $userToGetAppareils);
+        }
+        if(!$cando){
+            $res= getNewError(402,"User dont have permission");
+            echo json_encode($res);
+            die();
+        }
         // on fait une requete SQL pour récupérer tous les appareils de l'utilisateur
-
+        /**
+         * getAppareilsFromUsers : retourne un tableau indexé d'appareils
+         */
+        $user_s_appareils = getAppareilsFromUsersId($bdd, $userToGetAppareils);
+        $res = getnewSuccess(200, "appareils returned");
+        $res["appareils"] = $user_s_appareils;
         // et on renvoit tous ça en JSON
-
+        echo json_encode($res);
         break;
 
     case 'DELETE':

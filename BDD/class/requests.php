@@ -54,16 +54,29 @@
     }
 
     //// la requete vérifie qu'elle marche
-    global $getAppareil_SQL ;
-    $getAppareil = "INSERT INTO appareils(IDappareil, IDusers, nom, enregistrement) VALUES (?,?,?,CURDATE())";
-    function apprareils($conne,$idA,$idU,$nom,$type,$datenregistrement){
-        global $getAppareil_SQL;
-        $req = $conne->prepare($getAppareil_SQL);
-        $req->execute(array($idA,$idU,$nom,$type,$datenregistrement));
+    global $insertAppareil_SQL ;
+    $insertAppareil_SQL = "INSERT INTO appareils(IDusers, nom, enregistrement) VALUES (?,?,CURDATE())";
+    function insertAppareil($conne,$idU,$nom){
+        global $insertAppareil_SQL;
+        $req = $conne->prepare($insertAppareil_SQL);
+        $req->execute(array($idU,$nom));
         $donnees = $req->fetch();
         return $donnees;
         
     }
+
+    global $deleteAppareilOfUserFromId_SQL;
+    $deleteAppareilOfUserFromId_SQL = "DELETE FROM appareils WHERE IDappareil=? AND IDusers=?";
+
+    function deleteAppareilOfUserFromId($bdd, $idU, $idA){
+        global $deleteAppareilOfUserFromId_SQL;
+        $req = $bdd->prepare($deleteAppareilOfUserFromId_SQL);
+        $req->execute(array($idA,$idU));
+        $donnees = $req->fetch();
+        return $donnees;
+    }
+
+
 
     global $insertConnexion_SQL;
     $insertConnexion_SQL = "INSERT INTO connexion (iduser , dateC, sessionkey) VALUES (?,CURDATE(),?)";
@@ -75,6 +88,7 @@
         return $donnees;
         
     }
+
     global $deconnexion_SQL;
     $deconnexion_SQL ="DELETE FROM connexion WHERE iduser= ?";
     function deconnexion($conne,$iduser){
@@ -92,6 +106,17 @@
 
     function deleteAllFactureOfUser($bdd,$id){
         return false;
+    }
+
+
+    global $getAppareilsFromUsersId_SQL;
+    $getAppareilsFromUsersId_SQL = "SELECT * FROM appareils WHERE IDusers=?";
+    function getAppareilsFromUsersId($bdd, $id){
+        global $getAppareilsFromUsersId_SQL;
+        $req = $bdd->prepare($getAppareilsFromUsersId_SQL);
+        $req->execute(array($id));
+        $donnees = $req->fetch();
+        return $donnees;
     }
 
 
