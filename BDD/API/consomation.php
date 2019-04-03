@@ -3,7 +3,8 @@
 include("../functions.php");
 include("../class/Connexion.php");
 include("../class/requests.php");
-include("./utils.php")
+include("../class/mongoRequests.php");
+include("./utils.php");
 //TODO Gerer les requetes GET prendre tous les trucs en parametres (id nom prenom clee session ,idA )
 //TODO recuperer les consomation instantanee dans mongodb et les facture dans mysql retourner en JSon
 
@@ -12,77 +13,103 @@ include("./utils.php")
  * 
  * et pour la connexion MongoDB, on va faire ensemble le fichier class/Connexion.php
  */
+switch( $_SERVER['REQUEST_METHOD']){
+    case 'POST':
+        $bdd = Connexion::getMySQLConnexion();
+        // si il est connecté, on récupère l'id et la clé de session.
+                        // on fait une requete SQL pour vérifier que les infos sont bonnes
+                // sinon, on vérifie qu'il a donné le password et le username
+                        // on effectue la connexion dans le site nous même 
 
-case 'POST':
-        $var_idU = $_POST["idU"];
-        $var_idA = $_POST["idA"];
-        $var_dateD = $_POST["dateD"];
-        $var_dateF = $_POST["dateF"];
-        $var_conso = $_POST["conso"];
-      
-       
+        if(isset($_POST['id']) && isset($_POST['sessionkey']) ){
+            $id=$_POST['id'];
+            $sessionkey=$_POST['sessionkey'];
+            $donnees = getConnexion($bdd, $id, "");
+            if($donnees ==false){
+                $res= getNewError(402,"Wrong session key");
+                echo json_encode($res);
+                die();
+            }
+        }else if(isset($_POST['username']) && isset($_POST['password']) ){
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, array( "username" => $username , "password" => $password));
+            curl_setopt($curl, CURLOPT_URL, "http://localhost/SiteD/BDD/API/connexion.php"); // a modifier plus tard
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            $resultAPI = curl_exec($curl);
+            curl_close($curl);
+            $resultAPI = json_decode($resultAPI, true);
+            if($resultAPI['status'] != 'success'){
+                $res= getNewError(402,"wrong password/username");
+                echo json_encode($res);
+                die();
+            }
+            $id = $resultAPI['id'];
         }
 
-        //// les consommations c'est sur mongoDB 
-        $bdd = Connexion::getMySQLConnexion();
-        //// getUserExists c pas ça les parametres
-        $user = getUserExists($bdd, $var_idU, $var_idA,$var_dateD,$var_dateF,$var_conso);
-        // if($user!=false){
-        //     $err = getNewError(403, "User already exists");
-        //     echo json_encode($err);
-        //     die();
-        // } a continuer.
+        // récuperer les donnees de la consomation $_POST
+        $idAppareil = $_POST['idA'];
+        $consommation = $_POST['conso'];
+        $date = $_POST['date'];
 
-        //// Je comprends toujours pas pourquoi tu l'as fait
-        $var_mdp = md5($var_mdp);
-        $var_Adresse = $bdd->quote($var_Adresse);
+        $mongo = Connexion::getMongoConnexion();
+        // faire une requete pour ajouter la consommation Dans MONGOREQUEST
+        insertConsommation($mongo, $id, $idAppareil, $consommation, $date);
 
-        //// on veut ajouter une consommation en mongoDB pas insert un utilisateur
-        $requete  = insertUser($bdd, $var_Nom,$var_Prenom,$var_Adresse ,$var_Departement,$var_mail,$var_Telephone,$var_Username,$var_mdp);
-        $response = getNewSuccess(200, "User created");
-        echo json_encode($response);
+
+        $res = getNewSuccess(200, "Consommation Added");
+        finishAndDisconnect($resultAPI, $res);
         break;
-   case 'GET':
-       echo 'GET request not done for now';
+    case 'GET':
+      /**
+         * Lister les appareil d'un utilisateur
+         */
+        $bdd = Connexion::getMySQLConnexion();
+        // si il est connecté, on récupère l'id et la clé de session.
+                        // on fait une requete SQL pour vérifier que les infos sont bonnes
+                // sinon, on vérifie qu'il a donné le password et le username
+                        // on effectue la connexion dans le site nous même 
+
+        if(isset($_GET['id']) && isset($_GET['sessionkey']) ){
+            $id=$_GET['id'];
+            $sessionkey=$_GET['sessionkey'];
+            $donnees = getConnexion($bdd, $id, "");
+            if($donnees ==false){
+                $res= getNewError(402,"Wrong session key");
+                echo json_encode($res);
+                die();
+            }
+        }else if(isset($_GET['username']) && isset($_GET['password']) ){
+            $username = $_GET['username'];
+            $password = $_GET['password'];
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, array( "username" => $username , "password" => $password));
+            curl_setopt($curl, CURLOPT_URL, "http://localhost/SiteD/BDD/API/connexion.php"); // a modifier plus tard
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            $resultAPI = curl_exec($curl);
+            curl_close($curl);
+            $resultAPI = json_decode($resultAPI, true);
+            if($resultAPI['status'] != 'success'){
+                $res= getNewError(402,"wrong password/username");
+                echo json_encode($res);
+                die();
+            }
+            $id = $resultAPI['id'];
+        }
        break;
 
-   case 'DELETE':
-
-        // vérifier que c une personne connecté
-
-        // vérifier si l'utilisateur a le droit de supprimer son compte ou c'est l'admin
-
-        // effectivement supprimer le compte
-
-        //// C'est du copier coller de utilisateur.php
-       echo 'DELETE request not done for now';
-       $var_Nom = $_DELETE["nom"];
-       $var_Prenom = $_DELETE["prenom"];
-       $var_Adresse = $_DELETE["adresse"];
-       $var_Departement = $_DELETE["departement"];
-       $var_mail = $_DELETE["mail"];
-       $var_Telephone = $_DELETE["telephone"];
-       $var_Username = $_DELETE["username"];
-       $var_mdp = $_DELETE['password'];
-
-       // if($var_mdp!=$_GET['cpassword'] || $var_mail != $_GET['cmail']){
-       //     $err = getNewError(403, "Wrong confirmation");
-       //     echo json_encode($err);
-       //     die();
-       // }
-
-       $bdd = Connexion::getMySQLConnexion();
-
-        $var_mdp = md5($var_mdp);
-        $var_Adresse = $bdd->quote($var_Adresse);
-
-       $requete  = insertUser($bdd, $var_Nom,$var_Prenom,$var_Adresse ,$var_Departement,$var_mail,$var_Telephone,$var_Username,$var_mdp);
-       $response = getNewError(204, "User not exist");
-       echo json_encode($response);
-
-       break;
-   default :
-       echo 'request not Handled';
+    case 'DELETE':
+    default :
+        $response = getNewError(204, "Request not handled");
+        echo json_encode($response);
+  break;
+  
+   
 }
 
 

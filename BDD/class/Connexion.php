@@ -17,8 +17,16 @@ global $mongo;
         public static function getMongoConnexion(){
             global $mongo;
             if($mongo == NULL){
-                $m = new  MongoClient();
-                $mongo = $m->Domotique->conso;
+                // $m = new  MongoClient();
+                // $mongo = $m->Domotique->conso;
+
+                try{
+                    $m = new  MongoClient();
+                    $mongo = $m->Domotique->conso;
+                    // $conso = (new MongoDB\Client)->Domotique->conso;
+                }catch(Exception $e){
+                    die('Erreur : '.$e->getMessage());
+                }
             }
             return $mongo;
         }

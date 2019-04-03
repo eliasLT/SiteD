@@ -19,17 +19,18 @@ switch( $_SERVER['REQUEST_METHOD']){
         
         $bdd = Connexion::getMySQLConnexion();
         
-        if(isset($_POST['session_key'])){
+        if(isset($_POST['sessionkey'])){
             $session_key = $_POST["sessionkey"];
             $idU = $_POST['idU'];
 
-            $donnees = getSessionKeyFromID($idU);
+            $donnees = getSessionKeyFromID($bdd,$idU);
             if($donnees == false){
                 $err = getNewError(402, "User not Found");
                 echo json_encode($err);
                 die();
             }
-            $bdd_session = $donnees['iduser'];
+            // var_dump($donnees);
+            $bdd_session = $donnees['sessionkey'];
             if( $bdd_session != $session_key){
                 $err = getNewError(402, "Wrong session key");
                 echo json_encode($err);
@@ -119,24 +120,12 @@ switch( $_SERVER['REQUEST_METHOD']){
         }
         if(!$cando){
             $res= getNewError(402,"User dont have permission");
-            echo json_encode($res);
-            die();
+            finishAndDisconnect($resultAPI, $res);
         }
         $res = deleteAppareilOfUserFromId($bdd, $userOfAppareilToDelete, $appareilToDelete);
 
         $res = getnewSuccess(200,"appareil deleted");
-        echo json_encode($res);
-
-        if(isset($_GET['username']) && isset($_GET['password']) ){
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, array( "id" => $resultAPI['id'] , "sessionkey" => $resultAPI['sessionKey']));
-            curl_setopt($curl, CURLOPT_URL, "http://localhost/SiteD/BDD/API/connexion.php"); // a modifier plus tard
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            $result = curl_exec($curl);
-            curl_close($curl);
-        }
+        finishAndDisconnect($resultAPI, $res);
     
         break;
     default :

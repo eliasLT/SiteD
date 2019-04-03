@@ -89,24 +89,27 @@ switch( $_SERVER['REQUEST_METHOD']){
                 // SINON on renvoie un JSON avec getNewError avec msg : 
 
         $userToGetAppareils = $_GET['toGet'];
+        /    var_dump($_GET);
         $cando = checkIfAdmin($bdd, $id);
         if( ! $cando){
             $cando = ($id == $userToGetAppareils);
         }
         if(!$cando){
             $res= getNewError(402,"User dont have permission");
-            echo json_encode($res);
-            die();
+            finishAndDisconnect($resultAPI, $res);
         }
         // on fait une requete SQL pour récupérer tous les appareils de l'utilisateur
         /**
          * getAppareilsFromUsers : retourne un tableau indexé d'appareils
          */
         $user_s_appareils = getAppareilsFromUsersId($bdd, $userToGetAppareils);
+        // echo json_encode($user_s_appareils);
         $res = getnewSuccess(200, "appareils returned");
         $res["appareils"] = $user_s_appareils;
+
+        // var_dump($res);
         // et on renvoit tous ça en JSON
-        echo json_encode($res);
+        finishAndDisconnect($resultAPI, $res);
         break;
 
     case 'DELETE':
@@ -162,8 +165,7 @@ switch( $_SERVER['REQUEST_METHOD']){
         }
         if(!$cando){
             $res= getNewError(402,"User dont have permission");
-            echo json_encode($res);
-            die();
+            finishAndDisconnect($resultAPI, $res);
         }
 
 
@@ -181,19 +183,11 @@ switch( $_SERVER['REQUEST_METHOD']){
 
             $res = getnewSuccess(200, "User deleted");
             echo json_encode($res);
+            finishAndDisconnect($resultAPI, $res);
 
         // une fois la réposne envoyé, on déconnecte l'utilisateur si on l'a connecté 
 
-        if(isset($_GET['username']) && isset($_GET['password']) ){
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, array( "id" => $resultAPI['id'] , "sessionkey" => $resultAPI['sessionKey']));
-            curl_setopt($curl, CURLOPT_URL, "http://localhost/SiteD/BDD/API/connexion.php"); // a modifier plus tard
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            $result = curl_exec($curl);
-            curl_close($curl);
-        }
+        
         break;
     default :
         $response = getNewError(204, "Request not handled");

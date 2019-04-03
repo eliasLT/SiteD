@@ -115,8 +115,19 @@
         global $getAppareilsFromUsersId_SQL;
         $req = $bdd->prepare($getAppareilsFromUsersId_SQL);
         $req->execute(array($id));
-        $donnees = $req->fetch();
-        return $donnees;
+        // $donnees = $req->fetch();
+        $toSend = array();;
+        while(($donnees = $req->fetch()) != false){
+            
+            unset($donnees[0]);
+            unset($donnees[1]);
+            unset($donnees[2]);
+            unset($donnees[3]);
+            $toSend[] = $donnees;
+        }
+
+
+        return $toSend;
     }
 
 
