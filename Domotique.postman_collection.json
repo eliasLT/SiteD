@@ -1,0 +1,453 @@
+{
+	"info": {
+		"_postman_id": "365ca26b-a7bc-4fcd-a6d7-a65e9dc52096",
+		"name": "Domotique",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET appareils of user",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost/SiteD/BDD/API/utilisateur.php?username=Eminem15&password=Eminem15&toGet=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"SiteD",
+						"BDD",
+						"API",
+						"utilisateur.php"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "Eminem15"
+						},
+						{
+							"key": "password",
+							"value": "Eminem15"
+						},
+						{
+							"key": "toGet",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Insert User",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "nom",
+							"value": "LEFFAD",
+							"type": "text"
+						},
+						{
+							"key": "prenom",
+							"value": "Karim",
+							"type": "text"
+						},
+						{
+							"key": "adresse",
+							"value": "41 Rue de la coolitude",
+							"type": "text"
+						},
+						{
+							"key": "departement",
+							"value": "78",
+							"type": "text"
+						},
+						{
+							"key": "mail",
+							"value": "leffadkarim97@live.tk",
+							"type": "text"
+						},
+						{
+							"key": "telephone",
+							"value": "0695418703",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "Eminem155",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Eminem155",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/SiteD/BDD/API/utilisateur.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"SiteD",
+						"BDD",
+						"API",
+						"utilisateur.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Insert Appareil",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "nom",
+							"value": "Capteurtcp789",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "Eminem154",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Eminem154",
+							"type": "text"
+						},
+						{
+							"key": "idU",
+							"value": "6",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "sessionkey",
+							"value": "gu3gYcZ3",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/SiteD/BDD/API/appareil.php?idU",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"SiteD",
+						"BDD",
+						"API",
+						"appareil.php"
+					],
+					"query": [
+						{
+							"key": "idU",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Insert Connexion",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "Eminem155",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Eminem155",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/SiteD/BDD/API/connexion.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"SiteD",
+						"BDD",
+						"API",
+						"connexion.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE remove Connexion",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "Eminem15",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Eminem15",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/SiteD/BDD/API/connexion.php?id=6&sessionkey=gu3gYcZ3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"SiteD",
+						"BDD",
+						"API",
+						"connexion.php"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "6"
+						},
+						{
+							"key": "sessionkey",
+							"value": "gu3gYcZ3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE remove utilisateur",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost/SiteD/BDD/API/utilisateur.php?username=Eminem155&password=Eminem155&toDelete=6",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"SiteD",
+						"BDD",
+						"API",
+						"utilisateur.php"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "Eminem155"
+						},
+						{
+							"key": "password",
+							"value": "Eminem155"
+						},
+						{
+							"key": "toDelete",
+							"value": "6"
+						},
+						{
+							"key": "id",
+							"value": "3",
+							"disabled": true
+						},
+						{
+							"key": "sessionkey",
+							"value": "41rNLO3l",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE remove Appareil",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "Eminem15",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Eminem15",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/SiteD/BDD/API/appareil.php?username=Eminem15&password=Eminem15&userToDelete=1&toDelete=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"SiteD",
+						"BDD",
+						"API",
+						"appareil.php"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "Eminem15"
+						},
+						{
+							"key": "password",
+							"value": "Eminem15"
+						},
+						{
+							"key": "userToDelete",
+							"value": "1"
+						},
+						{
+							"key": "toDelete",
+							"value": "1"
+						},
+						{
+							"key": "id",
+							"value": "3",
+							"disabled": true
+						},
+						{
+							"key": "sessionkey",
+							"value": "41rNLO3l",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST insert Conso",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "Eminem15",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Eminem15",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/SiteD/BDD/API/consomation.php?username=Eminem15&password=Eminem15&userToDelete=1&toDelete=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"SiteD",
+						"BDD",
+						"API",
+						"consomation.php"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "Eminem15"
+						},
+						{
+							"key": "password",
+							"value": "Eminem15"
+						},
+						{
+							"key": "userToDelete",
+							"value": "1"
+						},
+						{
+							"key": "toDelete",
+							"value": "1"
+						},
+						{
+							"key": "id",
+							"value": "3",
+							"disabled": true
+						},
+						{
+							"key": "sessionkey",
+							"value": "41rNLO3l",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
