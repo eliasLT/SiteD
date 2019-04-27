@@ -65,7 +65,7 @@ switch( $_SERVER['REQUEST_METHOD']){
         break;
     case 'GET':
       /**
-         * Lister les appareil d'un utilisateur
+         * lister les consomation d'un appareil
          */
         $bdd = Connexion::getMySQLConnexion();
         // si il est connecté, on récupère l'id et la clé de session.
@@ -101,9 +101,93 @@ switch( $_SERVER['REQUEST_METHOD']){
             }
             $id = $resultAPI['id'];
         }
+
+        // récuperer les donnees de la consomation $_POST
+        // var_dump($_GET);
+        $userOfAppareilToGet = $_GET['userToDelete'];
+        $appareilToGet = $_GET['toDelete'];
+        $cando = checkIfAdmin($bdd, $id);
+        if( ! $cando){
+            // var_dump(array($id,  $userOfAppareilToDelete));
+            $cando = ($id == $userOfAppareilToGet);
+        }
+        if(!$cando){
+            $res= getNewError(402,"User dont have permission");
+            finishAndDisconnect($resultAPI, $res);
+        // récuperer les donnees de la consomation $_POST
+        // var_dump($_GET);
+        // $idAppareil = $_GET['idA'];
+        }
+
+
+        $mongo = Connexion::getMongoConnexion();
+        // faire une requete pour ajouter la consommation Dans MONGOREQUEST
+        $cons = getConsommationOfAppareil($mongo, $userOfAppareilToGet, $appareilToGet);
+        
+
+
+        $res = getNewSuccess(200, "Consommation returned");
+        $res['conso'] = $cons;
+        finishAndDisconnect($resultAPI, $res);
        break;
 
     case 'DELETE':
+        $bdd = Connexion::getMySQLConnexion();
+        // si il est connecté, on récupère l'id et la clé de session.
+                        // on fait une requete SQL pour vérifier que les infos sont bonnes
+                // sinon, on vérifie qu'il a donné le password et le username
+                        // on effectue la connexion dans le site nous même 
+
+        if(isset($_GET['id']) && isset($_GET['sessionkey']) ){
+            $id=$_GET['id'];
+            $sessionkey=$_GET['sessionkey'];
+            $donnees = getConnexion($bdd, $id, "");
+            if($donnees ==false){
+                $res= getNewError(402,"Wrong session key");
+                echo json_encode($res);
+                die();
+            }
+        }else if(isset($_GET['username']) && isset($_GET['password']) ){
+            $username = $_GET['username'];
+            $password = $_GET['password'];
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, array( "username" => $username , "password" => $password));
+            curl_setopt($curl, CURLOPT_URL, "http://localhost/SiteD/BDD/API/connexion.php"); // a modifier plus tard
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            $resultAPI = curl_exec($curl);
+            curl_close($curl);
+            $resultAPI = json_decode($resultAPI, true);
+            if($resultAPI['status'] != 'success'){
+                $res= getNewError(402,"wrong password/username");
+                echo json_encode($res);
+                die();
+            }
+            $id = $resultAPI['id'];
+        }
+        $userOfAppareilToDelete = $_GET['userToDelete'];
+        $appareilToDelete = $_GET['toDelete'];
+        $cando = checkIfAdmin($bdd, $id);
+        if( ! $cando){
+            // var_dump(array($id,  $userOfAppareilToDelete));
+            $cando = ($id == $userOfAppareilToDelete);
+        }
+        if(!$cando){
+            $res= getNewError(402,"User dont have permission");
+            finishAndDisconnect($resultAPI, $res);
+        // récuperer les donnees de la consomation $_POST
+        // var_dump($_GET);
+        // $idAppareil = $_GET['idA'];
+        }
+
+        $mongo = Connexion::getMongoConnexion();
+        // faire une requete pour ajouter la consommation Dans MONGOREQUEST
+        deleteConsommation($mongo, $userOfAppareilToDelete, $appareilToDelete);
+
+
+        $res = getNewSuccess(200, "Consommation removed");
+        finishAndDisconnect($resultAPI, $res);
     default :
         $response = getNewError(204, "Request not handled");
         echo json_encode($response);

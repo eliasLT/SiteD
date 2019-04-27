@@ -33,7 +33,7 @@ switch( $_SERVER['REQUEST_METHOD']){
         // on vérifie que le mot de passe est le bon 
             // si c'est pas bon on renvoie un json d'erreur avec message
         if($password != $user["mdp"]){
-            var_dump($user);
+            // var_dump($user);
             $err = getNewError(402,"error password");
             echo json_encode($err);
             die();

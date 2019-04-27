@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="static/semanticUI/semantic.min.css">
     <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="static/css/background.css">  
 </head>
 
 <body>
@@ -23,7 +24,7 @@
     
     <?php include('./header.php'); ?>
     <div class="main">
-    <form class="ui form" action="./BDD/signup.php" method="get">
+    <form class="ui form" action="./BDD/API/utilisateur.php" method="post">
         <h4 class="ui dividing header">Créer votre compte</h4>
         <div class="field">
             <label>Nom</label>

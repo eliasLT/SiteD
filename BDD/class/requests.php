@@ -21,8 +21,10 @@
         return $donnees;
     }
 
+
+
     global $insertUser_SQL ;
-    $insertUser_SQL = "INSERT INTO users (nom,prenom,adresse,departement,mail,telephone,username,mdp,date_ins) VALUES (?,?,?,?,?,?,?,?, CURDATE())";
+    $insertUser_SQL = "INSERT INTO users (nom,prenom,adresse,departement,mail,telephone,username,mdp,date_ins) VALUES (?,?,?,?,?,?,?,?,DATE_FORMAT(NOW(),'%Y%m%d%H%i%s'))";
     
     function insertUser($conn, $var_Nom,$var_Prenom,$var_Adresse ,$var_Departement,$var_mail,$var_Telephone,$var_Username,$var_mdp){
         global $insertUser_SQL ;
@@ -55,7 +57,7 @@
 
     //// la requete vérifie qu'elle marche
     global $insertAppareil_SQL ;
-    $insertAppareil_SQL = "INSERT INTO appareils(IDusers, nom, enregistrement) VALUES (?,?,CURDATE())";
+    $insertAppareil_SQL = "INSERT INTO appareils(IDusers, nom, enregistrement) VALUES (?,?,DATE_FORMAT(NOW(),'%Y%m%d%H%i%s'))";
     function insertAppareil($conne,$idU,$nom){
         global $insertAppareil_SQL;
         $req = $conne->prepare($insertAppareil_SQL);
@@ -79,7 +81,7 @@
 
 
     global $insertConnexion_SQL;
-    $insertConnexion_SQL = "INSERT INTO connexion (iduser , dateC, sessionkey) VALUES (?,CURDATE(),?)";
+    $insertConnexion_SQL = "INSERT INTO connexion (iduser , dateC, sessionkey) VALUES (?,DATE_FORMAT(NOW(),'%Y%m%d%H%i%s'),?)";
     function insertConnexion($conne,$iduser,$sessionkey){
         global $insertConnexion_SQL;
         $req = $conne->prepare($insertConnexion_SQL);
@@ -99,9 +101,15 @@
         return $donnees;
     }
 
-
-    function checkIfAdmin($conne, $id){
-        return false;
+    global $checkAdmin_SQL;
+    $checkAdmin_SQL="SELECT * FROM `domotique_admin` WHERE idUser=?";
+    function checkIfAdmin($bdd, $id){
+        global $checkAdmin_SQL;
+        $req = $bdd->prepare($checkAdmin_SQL);
+        $req->execute(array($id));
+        $donnees = $req->fetch();
+        return $donnees;
+       
     }
 
     function deleteAllFactureOfUser($bdd,$id){
@@ -150,5 +158,58 @@
         $donnees = $req->fetch();
         return $donnees;
     }
-        
+
+    global $insertAdmin_SQL;
+    $insertAdmin_SQL = "INSERT INTO domotique_admin (idUser) VALUES (?)";
+    function insertAdmin($bdd, $idUser){
+        global $insertAdmin_SQL;
+        $req = $bdd->prepare($insertAdmin_SQL);
+        $req->execute(array($idUser));
+        $donnees = $req->fetch();
+        return $donnees;
+    }
+    global $checkAdminSessionKey_SQL;
+    $checkAdminSessionKey_SQL = "SELECT idAdmin, session_key, dateC FROM admin_connexion WHERE idAdmin=? AND session_key=?";
+    function checkAdminSessionKey($bdd, $var_idAdmin, $var_sessionkey){
+        global $checkAdminSessionKey_SQL;
+        $req = $bdd->prepare($checkAdminSessionKey_SQL);
+        $req->execute(array($var_idAdmin,$var_sessionkey));
+        $donnees = $req->fetch();
+        return $donnees;
+    }
+
+    global $deleteAdminConnexion_SQL;
+    $deleteAdminConnexion_SQL="DELETE FROM `admin_connexion` WHERE idAdmin=? AND session_key=?";
+    function deleteAdminConnexion($bdd,$var_idAdmin,$var_sessionkey){
+        global $deleteAdminConnexion_SQL;
+        $req = $bdd->prepare($deleteAdminConnexion_SQL);
+        $req->execute(array($var_idAdmin,$var_sessionkey));
+        $donnees = $req->fetch();
+        return $donnees;
+    }
+
+    global $inserConnexionAdmin_SQL;
+    $inserConnexionAdmin_SQL = "INSERT INTO admin_connexion(idAdmin, session_key, dateC) VALUES (?,?,DATE_FORMAT(NOW(),'%Y%m%d%H%i%s'))";
+    function inserConnexionAdmin($bdd,$var_idAdmin,$var_sessionkey){
+        global $inserConnexionAdmin_SQL;
+        $req = $bdd->prepare($inserConnexionAdmin_SQL);
+        $req->execute(array($var_idAdmin,$var_sessionkey));
+        $donnees = $req->fetch();
+        return $donnees;
+
+    }
+
+   
+    
+    global $deleteAdmin_SQL;
+    $deleteAdmin_SQL="DELETE FROM `domotique_admin` WHERE idUser=?";
+    function deleteAdmin($bdd,$var_idUser){
+        global $deleteAdmin_SQL;
+        $req = $bdd->prepare($deleteAdmin_SQL);
+        $req->execute(array($var_idUser));
+        $donnees = $req->fetch();
+        return $donnees;
+
+    }
+   
 ?>

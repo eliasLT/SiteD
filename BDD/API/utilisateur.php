@@ -89,7 +89,7 @@ switch( $_SERVER['REQUEST_METHOD']){
                 // SINON on renvoie un JSON avec getNewError avec msg : 
 
         $userToGetAppareils = $_GET['toGet'];
-        /    var_dump($_GET);
+        //   var_dump($_GET);
         $cando = checkIfAdmin($bdd, $id);
         if( ! $cando){
             $cando = ($id == $userToGetAppareils);
@@ -182,7 +182,6 @@ switch( $_SERVER['REQUEST_METHOD']){
             $res = deleteUserFromId($bdd, $userToDelete);
 
             $res = getnewSuccess(200, "User deleted");
-            echo json_encode($res);
             finishAndDisconnect($resultAPI, $res);
 
         // une fois la réposne envoyé, on déconnecte l'utilisateur si on l'a connecté 
