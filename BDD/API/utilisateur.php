@@ -107,6 +107,7 @@ switch( $_SERVER['REQUEST_METHOD']){
         $res = getnewSuccess(200, "appareils returned");
         $res["appareils"] = $user_s_appareils;
 
+
         // var_dump($res);
         // et on renvoit tous ça en JSON
         finishAndDisconnect($resultAPI, $res);

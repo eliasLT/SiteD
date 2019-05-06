@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Domotique JF</title>
-    <link rel="stylesheet" href="static/semanticUI/semantic.min.css">
+<!--    <link rel="stylesheet" href="static/semanticUI/semantic.min.css">-->
     <link rel="stylesheet" href="static/css/style.css">
-    <link rel="stylesheet" href="static/css/background.css">  
+    <link rel="stylesheet" href="static/css/accueil.css">
+    
+    <!-- <link rel="stylesheet" href="static/css/background.css">   -->
 
     <!-- <link rel="stylesheet" href="static/css/index.css"> -->
 </head>
 <body>
-    <?php include("./header.php"); ?>
-    <div class="main">
+    <?php include("/composants/header.php"); ?> 
+
     La domotique, qu’est-ce que c’est ?<br/>
 Le terme « Domotique », dérivé du latin Domus (la maison) est une contraction de domus et informatique.
 <br/>
@@ -39,8 +41,9 @@ marche/arrêt d’un appareil électrique
 Chaque action pourra aussi être contrôlée de manière automatique, par exemple à horaire fixe, ou avec des modules de commande (télécommandes, écrans tactiles…)
 <br/>
 C'est pour cela qu'un groupe de technicien du lycée Jules Ferry  a été choisi pour simuler une domotique géneral pour plus d'explication je vous invite à regarder l'onglet presenation.
-    </div>
 
-    <?php include("./footer.php"); ?>
+
+    <?php 
+   include("/composants/footer.php"); ?>
 </body>
 </html>

@@ -2,89 +2,71 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="static/semanticUI/semantic.min.css">
+    <!--    <link rel="stylesheet" href="static/semanticUI/semantic.min.css">-->
     <link rel="stylesheet" href="static/css/style.css">
-    <link rel="stylesheet" href="static/css/background.css">  
+    <link rel="stylesheet" href="static/css/inscription.css">
 </head>
 
 <body>
-    <?php 
-        $departement = array(
-            75 => 'Paris',
-            78 => 'Yvelines',
-            92 => 'Hauts-de-Seine',
-            94 => 'Val de Maarne',
-            77 => 'Seine et Marne',
-            93 => 'Seine Saint-Denis',
-            91 => 'Essone',
-            99 => 'Konoha'
-        );
-    ?>
+<?php
+$departement = array(
+    00 => 'Département',
+    75 => 'Paris',
+    78 => 'Yvelines',
+    92 => 'Hauts-de-Seine',
+    94 => 'Val de Maarne',
+    77 => 'Seine et Marne',
+    93 => 'Seine Saint-Denis',
+    91 => 'Essone',
+    99 => 'Konoha'
+);
+?>
 
-    
-    <?php include('./header.php'); ?>
-    <div class="main">
-    <form class="ui form" action="./BDD/API/utilisateur.php" method="post">
-        <h4 class="ui dividing header">Créer votre compte</h4>
-        <div class="field">
-            <label>Nom</label>
-            <div class="two fields">
-                <div class="field">
-                    <input type="text" name="nom" placeholder="Nom">
-                </div>
-                <div class="field">
-                    <input type="text" name="prenom" placeholder="Prénom">
-                </div>
-            </div>
-        </div>
-        <div class="field">
-            <input type="text" name="mail" placeholder="mail">
-        </div>
-        <div class="field">
-            <input type="text" name="cmail" placeholder="Confirmer le mail">
-        </div>
-        <div class="field">
-                    <input type="text" name="username" placeholder="Username">
-                </div>
-        <div class="field">
-            <input type="password" name="password" placeholder="mot de passe">
-        </div>
-        <div class="field">
-            <input type="password" name="cpassword" placeholder="Confirmer le mot de passe">
-        </div>
-        <div class="field">
-            <label>Adresse</label>
-            <div class="fields">
-                <div class="twelve wide field">
-                    <input type="text" name="adresse" placeholder="Adresse">
-                </div>
-                <div class="four wide field">
-                    <input type="text" name="telephone" placeholder="Telephone">
-                </div>
-            </div>
-        </div>
-        <div class="two fields">
-            <div class="field">
-                <label>Département</label>
-                <select name="departement" class="ui fluid dropdown">
-                    
-                    <?php 
-                        // print_r
-                        foreach($departement as $k => $v){
-                            echo "<option value='$k'>$k : $v</option>";
-                        }
-                    // mettre en place le département en php 
-                    ?>
-                </select>
-            </div>
-        </div>
 
+<?php include('./composants/header.php'); ?>
+<form id="inscr" class="ui form" action="" method="post">
+    <h4 class="titre-form">Créer votre compte</h4>
+    <div class="field">
+<!--        <label for="nom"> Nom : </label>-->
+        <input id="nom" type="text" name="nom" placeholder="Nom">
+<!--        <label for="prenom"> Prenom : </label>-->
+        <input id="prenom" type="text" name="prenom" placeholder="Prénom">
+<!--        <label for="mail"> Mail : </label>-->
+        <input id="mail" type="text" name="mail" placeholder="mail">
+        <input id="cmail" type="text" name="cmail" placeholder="Confirmer le mail">
+<!--        <label for="username"> Username : </label>-->
+        <input id="username" type="text" name="username" placeholder="Username">
+<!--        <label for="password"> Mot de Passe : </label>-->
+        <input id="password" type="password" name="password" placeholder="mot de passe">
+        <input id="cpassword" type="password" name="cpassword" placeholder="Confirmer le mot de passe">
+<!--        <label for="adresse"> Adresse : </label>-->
+        <input id="adresse" type="text" name="adresse" placeholder="Adresse">
+<!--        <label for="telephone"> Téléphone : </label>-->
+        <input id="telephone" type="text" name="telephone" placeholder="Telephone">
+<!--        <label for="departement"> Département : </label>-->
+        <select id="departement" name="departement" class="ui fluid dropdown">
+
+            <?php
+            // print_r
+            foreach($departement as $k => $v){
+                echo "<option value='$k'>$k : $v</option>";
+            }
+            // mettre en place le département en php
+            ?>
+        </select>
         <!-- <div id='soumettre' class="ui button" tabindex="0">Créer le compte</div> -->
-        <input type="submit" value="Créer le compte" id='soumettre' class="ui button"></input>
-    </form>
+        <input type="submit" value="Créer le compte" id='soumettre'></input>
+
     </div>
-    
-    <!-- <script src="static/js/inscription.js"></script> -->
+
+
+</form>
+
+
+<?php
+include("/composants/footer.php"); ?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+ <script src="static/js/inscription.js"></script>
 </body>
 
 </html>
