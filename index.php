@@ -6,6 +6,7 @@
 <!--    <link rel="stylesheet" href="static/semanticUI/semantic.min.css">-->
     <link rel="stylesheet" href="static/css/style.css">
     <link rel="stylesheet" href="static/css/accueil.css">
+    <link rel="stylesheet" href="static/css/inscription.css">
     
     <!-- <link rel="stylesheet" href="static/css/background.css">   -->
 

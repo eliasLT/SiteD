@@ -64,7 +64,6 @@
         $req->execute(array($idU,$nom));
         $donnees = $req->fetch();
         return $donnees;
-        
     }
 
     global $deleteAppareilOfUserFromId_SQL;

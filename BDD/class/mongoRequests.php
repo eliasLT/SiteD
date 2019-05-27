@@ -4,49 +4,68 @@
  * Tu mets ici toutes tes requetes en mongoDBs
  */
 
+
+global  $name;
+$name = 'Domotique.conso';
+
+
  function deleteAllConsoOfUser($collection,$idUser){
-   $data =array(
+     global $name;
+     $data =array(
       "idUser" => $idUser
-      
-   );
-  $res = $collection->remove($data);
+        );
+     $bulk = new MongoDB\Driver\BulkWrite;
+     $bulk->delete($data);
+     $collection->executeBulkWrite($name, $bulk);
      return true;
  } 
 
 
 
  function insertConsommation($collection, $idUser, $idAppareil, $conso, $date){
-    $data = array(
+    global $name;
+     $data = array(
                 "idUser" => $idUser,
                 "idAppareil" => $idAppareil,
                 "date" => $date,
                 "conso" => $conso  
             );
-            $collection->insert($data);
+    $bulk = new MongoDB\Driver\BulkWrite;
+    $bulk->insert($data);
+     $collection->executeBulkWrite($name, $bulk);
  }
 
 
  function deleteConsommation($collection, $idUser, $idAppareil){
+     global $name;
      $data =array(
         "idUser" => $idUser,
         "idAppareil" => $idAppareil
      );
-    $collection->remove($data);
+     $bulk = new MongoDB\Driver\BulkWrite;
+     $bulk->delete($data);
+     $collection->executeBulkWrite($name, $bulk);
 
 
  }
 
  function getConsommationOfAppareil($collection, $idUser, $idAppareil){
-    $data =array(
+        global  $name;
+     $data =array(
         "idUser" => $idUser,
         "idAppareil" => $idAppareil
      );
-    $res = $collection->find($data);
+
+     $options = [
+//                        'projection' => ['_id' => 0],
+//                        'sort' => ['x' => -1],
+                    ];
+     $query = new MongoDB\Driver\Query($data, $options);
+     $cursor = $collection->executeQuery($name, $query);
+
      $toReturn = array();
-     while($res->hasNext()){
-        //  var_dump($res->next());
-        $toReturn[] = $res->next();
+     foreach ($cursor as $item) {
+         $toReturn[] = $item;
      }
-    // var_dump(get_class_methods($res));
     return $toReturn;
  }

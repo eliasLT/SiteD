@@ -5,6 +5,7 @@
     <!--    <link rel="stylesheet" href="static/semanticUI/semantic.min.css">-->
     <link rel="stylesheet" href="static/css/style.css">
     <link rel="stylesheet" href="static/css/contact.css">
+    <link rel="stylesheet" href="static/css/inscription.css">
 </head>
 <body>
 <?php include("./composants/header.php"); ?>

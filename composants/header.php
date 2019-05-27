@@ -18,7 +18,7 @@
         </div>
         
         <div class="connexion">
-            <span class="connexion-btn">Espace Client/Admin</span>  
+            <span id="connexion-btn" class="connexion-btn">Espace Client/Admin</span>
         
         </div>
     </div> 

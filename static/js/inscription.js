@@ -116,8 +116,11 @@ form.addEventListener('submit', function(event){
                 + usernameInput.value + "&password=" + passwordInput.value,
             dataType : 'json',
             success: function(data, status){
-                console.log(data);
-                console.log(status);
+                // console.log(data);
+                // console.log(status);
+                if(data.status === "success"){
+                    connect(usernameInput.value , passwordInput.value );
+                }
             },
             error : function (status) {
                 console.log(status)

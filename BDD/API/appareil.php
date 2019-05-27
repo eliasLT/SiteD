@@ -65,7 +65,12 @@ switch( $_SERVER['REQUEST_METHOD']){
         //// la fonction appareil ne marche pas 
         $requete  = insertAppareil($bdd,$idU,$nom);
         //// vérifie que tout s'est bien passé
+//        var_dump($requete);
+        $app = getAppareilsFromUsersId($bdd, $idU);
+        $idApp = $app[count($app)-1];
+
         $response = getnewSuccess(200, "Appareil added");
+        $response['idAppareil'] = $idApp['IDappareil'];
         //// ajouter le Content-Type : application/json
         echo json_encode($response);
         break;

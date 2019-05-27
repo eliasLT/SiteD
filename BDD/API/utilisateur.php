@@ -40,6 +40,9 @@ switch( $_SERVER['REQUEST_METHOD']){
 
         $requete  = insertUser($bdd, $var_Nom,$var_Prenom,$var_Adresse ,$var_Departement,$var_mail,$var_Telephone,$var_Username,$var_mdp);
         $response = getNewSuccess(200, "User created");
+
+        $userRes = getUser($bdd, $var_Username);
+        $response['idUser'] = $userRes['id'];
         echo json_encode($response);
         break;
     case 'GET':

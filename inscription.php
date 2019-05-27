@@ -65,7 +65,7 @@ $departement = array(
 
 <?php
 include("/composants/footer.php"); ?>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+
  <script src="static/js/inscription.js"></script>
 </body>
 

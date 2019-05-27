@@ -104,8 +104,8 @@ switch( $_SERVER['REQUEST_METHOD']){
 
         // récuperer les donnees de la consomation $_POST
         // var_dump($_GET);
-        $userOfAppareilToGet = $_GET['userToDelete'];
-        $appareilToGet = $_GET['toDelete'];
+        $userOfAppareilToGet = $_GET['userToGet'];
+        $appareilToGet = $_GET['idA'];
         $cando = checkIfAdmin($bdd, $id);
         if( ! $cando){
             // var_dump(array($id,  $userOfAppareilToDelete));

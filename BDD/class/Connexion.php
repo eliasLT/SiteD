@@ -3,7 +3,7 @@ global $mysql;
 global $mongo;
 
     class Connexion{
-        
+
         
         public static function getMySQLConnexion(){
             global $mysql;
@@ -17,13 +17,9 @@ global $mongo;
         public static function getMongoConnexion(){
             global $mongo;
             if($mongo == NULL){
-                // $m = new  MongoClient();
-                // $mongo = $m->Domotique->conso;
 
                 try{
-                    $m = new  MongoClient();
-                    $mongo = $m->Domotique->conso;
-                    // $conso = (new MongoDB\Client)->Domotique->conso;
+                    $mongo = new MongoDB\Driver\Manager("mongodb://localhost:27017/Domotique");
                 }catch(Exception $e){
                     die('Erreur : '.$e->getMessage());
                 }
